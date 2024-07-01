@@ -1,0 +1,23 @@
+A WebSocket is a communication protocol that provides full-duplex communication channels over a single TCP connection. It is designed to be implemented in web browsers and web servers, but it can be used by any client or server application.
+
+Key Features of WebSockets:
+Full-Duplex Communication: WebSockets allow for two-way communication between the client and the server, meaning both can send and receive data simultaneously.
+
+Persistent Connection: Unlike HTTP, which is stateless and requires a new connection for each request, a WebSocket connection remains open, allowing for ongoing communication.
+
+Low Latency: Because the connection remains open, there is less overhead compared to establishing a new connection for each request, resulting in lower latency communication.
+
+Reduced Bandwidth: WebSockets reduce the overhead associated with HTTP headers, making it more efficient for certain types of applications, like real-time updates and notifications.
+
+How WebSockets Work:
+Handshake: The communication begins with a handshake where the client sends an HTTP request to the server requesting to upgrade the connection to WebSocket. If the server supports WebSockets, it responds with a 101 status code, indicating a protocol switch.
+
+Connection: Once the handshake is complete, the connection is established, and both parties can send and receive messages independently.
+
+Data Frames: Messages are transmitted in the form of frames. These frames can carry text, binary data, or control frames.
+
+Closing the Connection: Either the client or the server can close the connection by sending a control frame indicating the connection should be closed.
+
+Use Cases:
+Real-Time Applications: Such as chat applications, online gaming, or real-time collaboration tools.
+Live Data Feeds: Like stock tickers, news feeds, or live sports updates.
