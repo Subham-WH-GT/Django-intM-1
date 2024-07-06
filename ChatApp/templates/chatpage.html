@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -67,5 +67,190 @@
 
   </script>
 
+</body>
+</html> -->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .container2{
+            margin-left: 10%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            font-size: 24px;
+        }
+        .logout-button {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .logout-button:hover {
+            text-decoration: underline;
+        }
+        .chat__item__container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .message-client{
+            text-align: right;
+            background-color: #e1ffc7;
+            align-self: flex-end;
+        }
+
+        .message-server{
+            text-align: left;
+            background-color: #ffffff;
+            align-self: flex-start;
+        }
+
+        .chat__item__container div {
+            padding: 5px;
+            margin: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .input-container {
+            display: flex;
+        }
+        .input-container input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+        }
+        .input-container button {
+            padding: 10px;
+            border: 1px solid #007BFF;
+            background: #007BFF;
+            color: #fff;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .input-container button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if viewname == 'chatPage' %}
+        <h1>Hello, Welcome to my chat site! {{request.user}}</h1>
+        {% elif viewname == 'groupchat' %}
+        <h1>Hello! {{request.user}} welcome to groupChat, {{groupname}}</h1>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <!-- <a class="logout-link" href="{% url 'logout-user' %}">Logout</a> -->
+        
+        <form class="logout-form" method="post" action="{% url 'logout-user' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+
+        {% endif %}
+        <div class="chat__item__container" id="id_chat_item_container">
+            {% for chat in chats %}
+            <div class="chat__item">{{chat.user}}: {{ chat.content }}</div>
+            {% endfor %}    
+        </div>
+        <div class="input-container">
+            <input type="text" id="id_message_send_input" placeholder="Type your message here..." />
+            <button type="submit" id="id_message_send_button">Send</button>
+        </div>
+    </div>
+
+    <div class="container2">
+        <h1 style="color: rgb(255, 98, 0); font-family: Arial, sans-serif; text-align: center;">Group Chats Links:</h1>
+
+        <ul style="letter-spacing: 0.1cm; line-height: 0.8cm;">
+            <li><a href="/cricket/">Cricket</a></li>
+            <li><a href="/football/">Football</a></li>
+            <li><a href="/current_affairs/">Current Affairs</a></li>
+            <li><a href="/central_exams/">Central Exams</a></li>
+            <li><a href="/trading_stocks/">Trading/Stocks</a></li>
+        </ul>
+    </div>
+
+        {{groupname|json_script:"group-name"}}
+    <script>
+        const groupName=JSON.parse(document.getElementById('group-name').textContent)
+        const chatSocket = new WebSocket("ws://" + window.location.host + "/"+groupName+"/");
+
+        chatSocket.onopen = function(e) {
+            console.log("WebSocket connected");
+        };
+
+        chatSocket.onclose = function(e) {
+            console.log("Connection closed!");
+        }
+
+        document.querySelector("#id_message_send_input").focus();
+
+        document.querySelector('#id_message_send_input').onkeyup = function(e) {
+            if(e.keyCode == 13) {
+                document.querySelector("#id_message_send_button").click();
+            }
+        };
+
+        document.querySelector("#id_message_send_button").onclick = function(e) {
+            var messageInput = document.querySelector("#id_message_send_input").value;
+
+            chatSocket.send(JSON.stringify({
+                // console.log(request)
+                message: messageInput,
+                username: "{{request.user.username}}"
+            }));
+        }
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            var div = document.createElement("div");
+            if(data.username=="{{request.user.username}}"){
+                div.classList.add("message","message-client")
+            }else{
+                div.classList.add("message","message-server") 
+            }
+            div.innerHTML = `<strong>${data.username}</strong>: ${data.message}`;
+            document.querySelector("#id_message_send_input").value = "";
+            document.querySelector("#id_chat_item_container").appendChild(div);
+        };
+    </script>
 </body>
 </html>
