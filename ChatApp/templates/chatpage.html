@@ -187,7 +187,9 @@
         {% endif %}
         <div class="chat__item__container" id="id_chat_item_container">
             {% for chat in chats %}
-            <div class="chat__item">{{chat.user}}: {{ chat.content }}</div>
+            <div class="chat__item"><strong>{{chat.user}}</strong>: {{ chat.content }}</div>
+            
+           
             {% endfor %}    
         </div>
         <div class="input-container">

@@ -11,4 +11,23 @@ class Group(models.Model):
     name=models.CharField(max_length=300)
 
     def __str__(self):
-        return self.name    
+        return self.name  
+
+
+# class privateChat(models.Model):
+    
+#     content=models.CharField(max_length=10000)
+#     timestamp=models.DateTimeField(auto_now=True)
+#     user=models.ForeignKey('private',on_delete=models.CASCADE)
+    
+#     def __str__(self):
+#         return self.user.user
+
+
+# class private(models.Model):
+#     user=models.CharField(max_length=30)
+    
+#     def __str__(self):
+#         return self.user
+    
+

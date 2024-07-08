@@ -6,6 +6,7 @@ from .models import Chat,Group
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.roomGroupName=self.scope['url_route']['kwargs']['groupkaname']
+        # print(type(self.roomGroupName))
         await self.channel_layer.group_add(
             self.roomGroupName,
             self.channel_name
@@ -63,9 +64,16 @@ class onetoone(AsyncWebsocketConsumer):
     async def receive(self,text_data):
         text_data_json=json.loads(text_data)
         # print(text_data_json)
+        # group=await database_sync_to_async(Group.objects.get)(name=self.roomGroupName)
+        # chat=Chat(user=username ,content=message,group=group)
+        # await database_sync_to_async(chat.save)()
+
+        
         message=text_data_json["message"]
         username=text_data_json["username"]
-
+        # person=await database_sync_to_async(private.objects.get)(user=username)
+        # chat=privateChat(content=message,user=person)
+        # await database_sync_to_async(chat.save)()
         await self.channel_layer.group_send(
             self.roomGroupName,{
                 "type":"sendMessage",

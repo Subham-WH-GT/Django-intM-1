@@ -4,9 +4,13 @@ def chatPage(request, *args, **kwargs):
     if not request.user.is_authenticated:
         # print("not authenticated")
         return redirect("login-user")
+    # person, created=private.objects.get_or_create(user=request.user)
+    # chats=privateChat.objects.filter(user=person) if not created else []
         # return render(request,"loginpage.html")
     context={
         'viewname':'chatPage',
+        'person':request.user,
+        # 'chats':chats,
     }
     # print("authenticated")
     # print(request.META)
